@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-
+const APIURL = import.meta.env.VITE_API_URL;
 const BrowseUsers = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [roleFilter, setRoleFilter] = useState<string>('');
   const [skillFilter, setSkillFilter] = useState<string>('');
   const [interestFilter, setInterestFilter] = useState<string>('');
-
+  
   // Function to send a connection request to the receiver
   const sendRequest = async (receiverId: number) => {
     try {
@@ -15,8 +15,8 @@ const BrowseUsers = () => {
         console.error('No token found');
         return;
       }
-
-      const response = await fetch('http://localhost:5000/api/connections/send', {
+     
+      const response = await fetch(`${APIURL}/api/connections/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

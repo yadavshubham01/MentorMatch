@@ -5,7 +5,7 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { SlLogin } from "react-icons/sl";
 import { CiLogout } from "react-icons/ci";
 import { useState, useEffect } from "react";
-
+const APIURL = import.meta.env.VITE_API_URL;
 const Navbar = () => {
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const Navbar = () => {
           return;
         }
 
-        const response = await fetch("http://localhost:5000/api/nsg", {
+        const response = await fetch(`${APIURL}/api/nsg`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

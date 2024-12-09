@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-
+const APIURL = import.meta.env.VITE_API_URL;
 const ConnectionRequests = () => {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -13,7 +13,7 @@ const ConnectionRequests = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/connections/requests', {
+        const response = await fetch(`${APIURL}/api/connections/requests`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ const ConnectionRequests = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/connections/${status}/${id}`, {
+      const response = await fetch(`${APIURL}/api/connections/${status}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

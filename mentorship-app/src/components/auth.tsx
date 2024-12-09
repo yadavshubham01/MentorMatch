@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import layer1 from '../images/bg-light.png'
-
+const APIURL = import.meta.env.VITE_API_URL;
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [postInputs, setPostInputs] = useState({
     email: "",
@@ -14,7 +14,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
 
   async function sendRequest() {
     try {
-      const res = await axios.post(`http://localhost:5000/api/users/${type === "signup" ? "register" : "login"}`, postInputs);
+      const res = await axios.post(`${APIURL}/api/users/${type === "signup" ? "register" : "login"}`, postInputs);
       const data = res.data;
       console.log(res.data);
       localStorage.setItem("token", data.token);

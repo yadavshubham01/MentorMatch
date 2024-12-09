@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getUserProfile } from '../services/api';
 import {jwtDecode} from 'jwt-decode';
 import Navbar from '../components/Navbar';
-
+const APIURL = import.meta.env.VITE_API_URL;
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [matches, setMatches] = useState<any[]>([]);
@@ -43,7 +43,7 @@ const Dashboard = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/matches', {
+        const response = await fetch(`${APIURL}/matches`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/connections/send', {
+      const response = await fetch(`${APIURL}/api/connections/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

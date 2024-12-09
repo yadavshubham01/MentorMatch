@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+const APIURL = import.meta.env.VITE_API_URL;
 
 export const NotificationCard = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -14,7 +14,7 @@ export const NotificationCard = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/nsg', {
+        const response = await fetch(`${APIURL}/api/nsg`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,7 +45,7 @@ export const NotificationCard = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/read/${id}`, {
+      const response = await fetch(`${APIURL}/api/read/${id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ export const NotificationCard = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/${id}`, {
+      const response = await fetch(`${APIURL}/api/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

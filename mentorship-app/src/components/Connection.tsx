@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+const APIURL = import.meta.env.VITE_API_URL;
 const SendConnectionRequest = () => {
   const [receiverId, setReceiverId] = useState<number | string>('');
 
@@ -11,7 +11,7 @@ const SendConnectionRequest = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/connections/send', {
+      const response = await fetch(`${APIURL}/api/connections/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

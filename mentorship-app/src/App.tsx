@@ -10,7 +10,6 @@ import BrowseUsers from './pages/Browers'
 import { Notification } from './pages/Notification'
 
 function App() {
- 
 
   return (
     <>
