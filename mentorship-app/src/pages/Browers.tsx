@@ -48,7 +48,7 @@ const BrowseUsers = () => {
         if (skillFilter) queryParams.append('skills', skillFilter);
         if (interestFilter) queryParams.append('interests', interestFilter);
 
-        const response = await fetch(`http://localhost:5000/api/users/users?${queryParams.toString()}`, {
+        const response = await fetch(`${APIURL}/api/users/users?${queryParams.toString()}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
