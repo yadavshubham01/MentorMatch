@@ -1,4 +1,12 @@
 const APIURL = import.meta.env.VITE_API_URL;
+interface ProfileData {
+  name?: string;
+  role?: string;
+  bio?: string;
+  skills?: { name: string }[];
+  interests?: { name: string }[];
+}
+
 export const getUserProfile = async (id: number, token: string) => {
     try {
       const response = await fetch(`${APIURL}/api/users/profile/${id}`, {
@@ -19,7 +27,7 @@ export const getUserProfile = async (id: number, token: string) => {
     }
   };
 
-  export const updateUserProfile = async (token: string, profileData: any) => {
+  export const updateUserProfile = async (token: string, profileData: ProfileData) => {
     try {
       const response = await fetch(`${APIURL}/api/users/profile`, {
         method: 'PUT',

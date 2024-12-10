@@ -60,8 +60,8 @@ const getUserProfile = async (req, res) => {
         const profile = await db_1.default.user.findUnique({
             where: { id: Number(id) },
             include: {
-                skills: true, // Include related skills
-                interests: true, // Include related interests
+                skills: true,
+                interests: true,
             },
         });
         if (!profile) {
@@ -79,11 +79,17 @@ const getUserProfile = async (req, res) => {
     }
 };
 exports.getUserProfile = getUserProfile;
-const updateUserProfile = async (req, res) => {
+const updateUserProfile = async (req, res, next) => {
     try {
         const { userId } = req.user;
         const { name, role, bio, skills, interests } = req.body;
-        // Update the user profile
+        const skillData = skills.map((skill) => ({
+            name: skill.name,
+        }));
+        const interestData = interests.map((interest) => ({
+            where: { name: interest.name },
+            create: { name: interest.name },
+        }));
         const updatedUser = await db_1.default.user.update({
             where: { id: userId },
             data: {
@@ -91,14 +97,11 @@ const updateUserProfile = async (req, res) => {
                 role,
                 bio,
                 skills: {
-                    deleteMany: {}, // Clears existing skills
-                    create: skills.map((skill) => ({ name: skill })),
+                    deleteMany: {},
+                    create: skillData,
                 },
                 interests: {
-                    connectOrCreate: interests.map((interest) => ({
-                        where: { name: interest }, // Assuming `name` is a unique field
-                        create: { name: interest },
-                    })),
+                    connectOrCreate: interestData,
                 },
             },
             include: {

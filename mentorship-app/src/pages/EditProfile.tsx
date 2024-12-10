@@ -34,6 +34,7 @@ const EditProfile = () => {
   const [newInterest, setNewInterest] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [decodedToken, setDecodedToken] = useState<any | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +47,7 @@ const EditProfile = () => {
 
       try {
         const decodedToken: any = jwtDecode(token);
+        setDecodedToken(decodedToken)
         const userId = decodedToken.userId;
         const userProfile = await getUserProfile(userId, token);
         setProfile({
@@ -74,7 +76,7 @@ const EditProfile = () => {
       trimmedSkill &&
       !profile.skills.some((skill) => skill.name.toLowerCase() === trimmedSkill.toLowerCase())
     ) {
-      const newSkillObject = { id: Date.now().toString(), name: trimmedSkill, userId: 'userId' }; // Replace 'userId' dynamically if needed
+      const newSkillObject = { id: Date.now().toString(), name: trimmedSkill, userId: decodedToken.userId }; // Replace 'userId' dynamically if needed
       setProfile({
         ...profile,
         skills: [...profile.skills, newSkillObject],
@@ -89,12 +91,12 @@ const EditProfile = () => {
       trimmedInterest &&
       !profile.interests.some((interest) => interest.name.toLowerCase() === trimmedInterest.toLowerCase())
     ) {
-      const newInterestObject = { id: Date.now().toString(), name: trimmedInterest }; // Replace 'id' generation logic if needed
+      const newInterestObject = { id: Date.now().toString(), name: trimmedInterest }; 
       setProfile({
         ...profile,
         interests: [...profile.interests, newInterestObject],
       });
-      setNewInterest(''); // Clear input
+      setNewInterest(''); 
     }
   };
   
@@ -245,7 +247,7 @@ const EditProfile = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition"
+            className="w-full bg-slate-950 text-white py-2 rounded hover:bg-slate-800 transition"
           >
             Save Changes
           </button>

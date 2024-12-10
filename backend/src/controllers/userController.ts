@@ -55,8 +55,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
       const profile = await prisma.user.findUnique({
         where: { id: Number(id) },
         include: {
-          skills: true,  // Include related skills
-          interests: true,  // Include related interests
+          skills: true,  
+          interests: true,  
         },
       });
   
@@ -74,15 +74,23 @@ export const getUserProfile = async (req: Request, res: Response) => {
     }
   };
   
-
- 
-
-  export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserProfile = async (req: Request, res: Response, next: NextFunction)=> {
     try {
       const { userId } = (req as any).user;
       const { name, role, bio, skills, interests } = req.body;
+
+     
+      const skillData = skills.map((skill: { name: string }) => ({
+        name: skill.name, 
+      }));
   
-      // Update the user profile
+   
+      const interestData = interests.map((interest: { name: string }) => ({
+        where: { name: interest.name }, 
+        create: { name: interest.name }, 
+      }));
+  
+      
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
@@ -90,14 +98,11 @@ export const getUserProfile = async (req: Request, res: Response) => {
           role,
           bio,
           skills: {
-            deleteMany: {}, // Clears existing skills
-            create: skills.map((skill: string) => ({ name: skill })),
+            deleteMany: {}, 
+            create: skillData,
           },
           interests: {
-            connectOrCreate: interests.map((interest: string) => ({
-              where: { name: interest }, // Assuming `name` is a unique field
-              create: { name: interest },
-            })),
+            connectOrCreate: interestData,
           },
         },
         include: {
@@ -112,6 +117,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
       if (error instanceof jwt.JsonWebTokenError) {
         return res.status(401).json({ error: 'Unauthorized: Invalid token' });
       }
+  
+  
       res.status(500).json({ error: 'An unexpected error occurred' });
     }
   };
