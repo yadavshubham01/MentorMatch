@@ -3,13 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { getUserProfile, updateUserProfile } from '../services/api';
 import {jwtDecode} from 'jwt-decode';
 
+interface Skill {
+  id: string;
+  name: string;
+  userId: string;
+}
+
+interface Interest {
+  id: string;
+  name: string;
+}
+
+interface Profile {
+  name: string;
+  role: string;
+  bio: string;
+  skills: Skill[]; 
+  interests: Interest[]; 
+}
+
 const EditProfile = () => {
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<Profile>({
     name: '',
     role: '',
     bio: '',
-    skills: [] as string[],
-    interests: [] as string[],
+    skills: [],
+    interests: [] ,
   });
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
@@ -30,9 +49,16 @@ const EditProfile = () => {
         const userId = decodedToken.userId;
         const userProfile = await getUserProfile(userId, token);
         setProfile({
-            ...userProfile,
-            skills: userProfile.skills || [], // Fallback to empty array
-            interests: userProfile.interests || [], // Fallback to empty array
+          ...userProfile,
+          skills: (userProfile.skills || []).map((skill: any) => ({
+            id: skill.id,
+            name: skill.name,
+            userId: skill.userId,
+          })),
+          interests: (userProfile.interests || []).map((interest: any) => ({
+            id: interest.id,
+            name: interest.name,
+          })),
           });
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -43,24 +69,41 @@ const EditProfile = () => {
   }, [navigate]);
 
   const handleAddSkill = () => {
-    if (newSkill.trim() && !profile.skills.includes(newSkill)) {
-      setProfile({ ...profile, skills: [...profile.skills, newSkill] });
-      setNewSkill('');
+    const trimmedSkill = newSkill.trim();
+    if (
+      trimmedSkill &&
+      !profile.skills.some((skill) => skill.name.toLowerCase() === trimmedSkill.toLowerCase())
+    ) {
+      const newSkillObject = { id: Date.now().toString(), name: trimmedSkill, userId: 'userId' }; // Replace 'userId' dynamically if needed
+      setProfile({
+        ...profile,
+        skills: [...profile.skills, newSkillObject],
+      });
+      setNewSkill(''); // Clear input
     }
   };
-
+  
   const handleAddInterest = () => {
-    if (newInterest.trim() && !profile.interests.includes(newInterest)) {
-      setProfile({ ...profile, interests: [...profile.interests, newInterest] });
-      setNewInterest('');
+    const trimmedInterest = newInterest.trim();
+    if (
+      trimmedInterest &&
+      !profile.interests.some((interest) => interest.name.toLowerCase() === trimmedInterest.toLowerCase())
+    ) {
+      const newInterestObject = { id: Date.now().toString(), name: trimmedInterest }; // Replace 'id' generation logic if needed
+      setProfile({
+        ...profile,
+        interests: [...profile.interests, newInterestObject],
+      });
+      setNewInterest(''); // Clear input
     }
   };
+  
 
-  const handleRemoveSkill = (skill: string) => {
+  const handleRemoveSkill = (skill: Skill) => {
     setProfile({ ...profile, skills: profile.skills.filter((s) => s !== skill) });
   };
 
-  const handleRemoveInterest = (interest: string) => {
+  const handleRemoveInterest = (interest: Interest) => {
     setProfile({
       ...profile,
       interests: profile.interests.filter((i) => i !== interest),
@@ -102,7 +145,7 @@ const EditProfile = () => {
             <label className="block text-sm font-medium mb-2">Name</label>
             <input
               type="text"
-              value={profile.name}
+              value={profile.name || ''}
               onChange={(e) => setProfile({ ...profile, name: e.target.value })}
               className="w-full p-2 border rounded"
             />
@@ -110,7 +153,7 @@ const EditProfile = () => {
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Role</label>
             <select
-              value={profile.role}
+              value={profile.role || ''}
               onChange={(e) => setProfile({ ...profile, role: e.target.value })}
               className="w-full p-2 border rounded"
             >
@@ -122,7 +165,7 @@ const EditProfile = () => {
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Bio</label>
             <textarea
-              value={profile.bio}
+              value={profile.bio || ''}
               onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
               className="w-full p-2 border rounded"
               rows={4}
@@ -147,12 +190,12 @@ const EditProfile = () => {
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {profile.skills.map((skill, index) => (
+              {profile.skills.map((skill) => (
                 <span
-                  key={index}
+                  key={skill.id}
                   className="flex items-center gap-2 px-2 py-1 bg-gray-200 rounded text-sm"
                 >
-                  {skill}
+                   {skill.name}
                   <button
                     type="button"
                     onClick={() => handleRemoveSkill(skill)}
@@ -183,12 +226,12 @@ const EditProfile = () => {
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {profile.interests.map((interest, index) => (
+              {profile.interests.map((interest) => (
                 <span
-                  key={index}
+                  key={interest.id}
                   className="flex items-center gap-2 px-2 py-1 bg-gray-200 rounded text-sm"
                 >
-                  {interest}
+                  {interest.name}
                   <button
                     type="button"
                     onClick={() => handleRemoveInterest(interest)}
