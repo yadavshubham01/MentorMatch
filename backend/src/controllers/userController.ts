@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response ,NextFunction} from 'express';
 import prisma from '../config/db';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -75,7 +75,9 @@ export const getUserProfile = async (req: Request, res: Response) => {
   };
   
 
-export const updateUserProfile = async (req: Request, res: Response) => {
+ 
+
+  export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { userId } = (req as any).user;
       const { name, role, bio, skills, interests } = req.body;
@@ -93,9 +95,9 @@ export const updateUserProfile = async (req: Request, res: Response) => {
           },
           interests: {
             connectOrCreate: interests.map((interest: string) => ({
-                where: { name: interest }, // Assuming `name` is a unique field
-                create: { name: interest },
-              })),
+              where: { name: interest }, // Assuming `name` is a unique field
+              create: { name: interest },
+            })),
           },
         },
         include: {
@@ -113,6 +115,7 @@ export const updateUserProfile = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'An unexpected error occurred' });
     }
   };
+  
   
   
 export const getUsers = async (req: Request, res: Response) => {

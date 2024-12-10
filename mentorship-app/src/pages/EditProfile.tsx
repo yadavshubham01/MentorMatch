@@ -79,7 +79,7 @@ const EditProfile = () => {
         ...profile,
         skills: [...profile.skills, newSkillObject],
       });
-      setNewSkill(''); // Clear input
+      setNewSkill(''); 
     }
   };
   
